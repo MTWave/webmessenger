@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "osiris"
+version = "0.1.0"
+description = ""
+authors = ["v.alehin <v.alehin@corp.mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+uvicorn = "^0.29.0"
+fastapi = "^0.111.0"
+pydantic = "^2.7.1"
+jinja2 = "^3.1.4"
+sqlalchemy = "^2.0.30"
+alembic = "^1.13.1"
+tenacity = "^8.3.0"
+greenlet = "^3.0.3"
+websocket = "^0.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
