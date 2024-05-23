@@ -1,0 +1,29 @@
+# ToDo: Debug
+version: '3.8'
+
+services:
+
+  web:
+    build: ./project
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    volumes:
+      - ./project:/usr/src/app
+    ports:
+      - 8004:8000
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/osiris_db
+    depends_on:
+      - db
+
+  postgres:
+    image: postgres:14.8-alpine3.18
+    environment:
+      POSTGRES_DB: "osiris_db"
+      POSTGRES_USER: "osiris_user"
+      POSTGRES_PASSWORD: "osiris_pwd_for_db"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ../2. Init Database:/docker-entrypoint-initdb.d
+      - habrdb-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"

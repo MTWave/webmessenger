@@ -1,0 +1,43 @@
+version: 1
+LOGGER_NAME: osiris
+LOG_FORMAT: '%(levelprefix)s | %(asctime)s | %(message)s'
+LOG_LEVEL: DEBUG
+disable_existing_loggers: false
+formatters:
+    default:
+        (): uvicorn.logging.DefaultFormatter
+        datefmt: '%Y-%m-%d %H:%M:%S'
+        fmt: '%(levelprefix)s | %(asctime)s | %(message)s'
+
+    base_asset_fmt:
+        class: logging.Formatter
+        format: "%(asctime)s.%(msecs)03d %(name)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s"
+        datefmt: "%Y%m%d_%H%M%S"
+
+handlers:
+    default:
+        class: logging.StreamHandler
+        formatter: default
+        stream: ext://sys.stderr
+
+    custom_handler:
+        class: logging.FileHandler
+        formatter: base_asset_fmt
+        filename: ./osiris/logs/custom.log
+        mode: 'w'
+
+loggers:
+    osiris:
+        handlers:
+        - default
+        level: DEBUG
+
+    custom:
+        handlers:
+        - custom_handler
+        level: DEBUG
+
+root:
+    level: DEBUG
+    handlers:
+        - default
