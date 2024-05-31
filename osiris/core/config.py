@@ -17,3 +17,7 @@ class Settings(BaseSettings):
 
     # Logger
     logger_cfg: str = "osiris/conf/logger_cfg.yaml"
+
+    # api
+    templates_dir: str = "osiris/templates"
+    static_dir: str = "osiris/templates/static"

@@ -10,9 +10,9 @@ body{
 margin: 0;
 font-size: 150px;
 color: rgba(0, 0, 0, 0.01);
-background-image: url(OsirisBG.jpg);
+background-image: url(/static/imgs/OsirisBG.jpg);
 background-repeat: repeat;
--webkit-background-clip:text;
+-webkit-background-clip: text;
 animation: animate 15s ease-in-out infinite;
 text-align: center;
 text-transform: uppercase;

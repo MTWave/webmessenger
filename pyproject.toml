@@ -16,6 +16,7 @@ alembic = "^1.13.1"
 tenacity = "^8.3.0"
 greenlet = "^3.0.3"
 websocket = "^0.2.1"
+fastapi-csrf-protect = "^0.3.3"
 
 
 [build-system]
