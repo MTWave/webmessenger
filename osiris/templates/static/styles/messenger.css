@@ -136,7 +136,52 @@ body{
     animation-duration: 11s;
 }
 
+/*GRID*/
 
+.wrapper {
+    direction:  ltr;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 100px);
+    gap: 10px;
+  }
+  .item1L {
+    grid-column: 1;
+  }
+
+.wrapper1 {
+    direction: rtl;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 100px);
+    gap: 10px;
+  }
+  .item1 {
+    grid-column: 1;
+  }
+
+  /*MESSAGE STYLE*/
+
+  .message {
+    background-color: rgb(66, 125, 252);
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .message1 {
+    background-color: rgb(162, 66, 252);
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+  }
+
+  .message-text {
+    color: #333;
+    font-size: 18px;
+    line-height: 1.6;
+    text-align: center;
+  }
 
 @keyframes animate {
 
@@ -314,32 +359,5 @@ body {
     margin: 0 10px;
 }
 
-.fa-facebook:hover {
-    color: #4267b3 !important;
-}
-
-.fa-twitter:hover {
-    color: #1da1f2 !important;
-}
-
-.fa-instagram:hover {
-    color: #ce2b94 !important;
-}
-
-.fa-invision:hover {
-    color: #f83263 !important;
-}
-
-.fa-github:hover {
-    color: #161414 !important;
-}
-
-.fa-whatsapp:hover {
-    color: #25d366 !important;
-}
-
-.fa-snapchat:hover {
-    color: #fffb01 !important;
-}
 
 /* End */
