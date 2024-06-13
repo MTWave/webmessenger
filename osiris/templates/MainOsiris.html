@@ -5,9 +5,9 @@
         content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UY-Compable" content="ie=edge">
         <title>Osiris</title>
-        <link
-        href="/static/styles/mainOsiris.css"
-        rel="stylesheet">
+        <link href="/static/styles/mainOsiris.css" rel="stylesheet">
+
+        <script src="/static/scripts/MainOsiris.js" defer=""></script>
     </head>
 
     <body>
@@ -18,13 +18,13 @@
             <div class="title">
                Login & Registration
             </div>
-            <form action="#">
+            <form id="login_form" action="#">
                <div class="field">
-                  <input type="text" required>
+                  <input id="username" type="text" required>
                   <label>Username</label>
                </div>
                <div class="field">
-                  <input type="password" required>
+                  <input id="password" type="password" required>
                   <label>Password</label>
                </div>
                <div class="content">
@@ -37,7 +37,7 @@
                   <input type="submit" value="Login">
                </div>
                <div class="signup-link">
-                  Not a member? <a href="RegistrationOsiris.html">Signup now</a>
+                  Not a member? <a href="/sign_up">Signup now</a>
                </div>
             </form>
          </div>

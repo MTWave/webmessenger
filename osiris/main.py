@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from osiris import settings
+from osiris.services.auth_service.api import router as auth_router
 
 TEMPLATES = Jinja2Templates(directory=settings.templates_dir)
 
@@ -14,7 +15,7 @@ app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
 
 api_router = APIRouter()
-
+api_router.include_router(auth_router)
 
 @api_router.get("/", status_code=200)
 def root() -> dict:
@@ -30,6 +31,17 @@ def sign_in(request: Request) -> dict:
     """
     return TEMPLATES.TemplateResponse(
         "MainOsiris.html",
+        {"request": request},
+    )
+
+@api_router.get("/sign_up", status_code=200)
+def sign_in(request: Request) -> dict:
+    """
+    Root GET
+    """
+    # ToDo - redirect
+    return TEMPLATES.TemplateResponse(
+        "RegistrationOsiris.html",
         {"request": request},
     )
 

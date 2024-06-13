@@ -64,5 +64,18 @@ INFO  [alembic.autogenerate.compare] Detected removed index 'ix_Chat_id' on 'Cha
 INFO  [alembic.autogenerate.compare] Detected removed table 'Chat'
   Generating /home/valehin/projects/test_projects/webmessenger/alembic/versions/f81ed92dbb64_initial.py ...  done
 
+# При этом надо импорты моделей поддерживать в актуальному состоянии!
+(osiris-py3.10) valehin@valehin-ThinkBook-15-G2-ITL:~/projects/test_projects/webmessenger$ alembic revision --message="Added users_chats" --autogenerate
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'Users_Chats'
+INFO  [alembic.autogenerate.compare] Detected added index ''ix_Users_Chats_id'' on '('id',)'
+  Generating /home/valehin/projects/test_projects/webmessenger/alembic/versions/2b189f1e8392_added_users_chats.py ...  done
+(osiris-py3.10) valehin@valehin-ThinkBook-15-G2-ITL:~/projects/test_projects/webmessenger$ git push origin HEAD^C
+(osiris-py3.10) valehin@valehin-ThinkBook-15-G2-ITL:~/projects/test_projects/webmessenger$ alembic upgrade head
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade e66ad7d1cc42 -> 2b189f1e8392, Added users_chats
+(osiris-py3.10) valehin@valehin-ThinkBook-15-G2-ITL:~/projects/test_projects/webmessenger$ 
 
 ```
