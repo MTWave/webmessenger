@@ -21,3 +21,8 @@ class Settings(BaseSettings):
     # api
     templates_dir: str = "osiris/templates"
     static_dir: str = "osiris/templates/static"
+
+    # auth service
+    auth_service_jwt_secret: str = "dftgyhujklnbvcfgrt7yiuy65e4wrdtcfgvjhbio8y7tf"
+    auth_service_jwt_algo: str = "HS256"
+    auth_service_expire_time: int = 30 # minutes
