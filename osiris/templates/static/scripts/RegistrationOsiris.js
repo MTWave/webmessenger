@@ -33,7 +33,10 @@
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('An error occurred. Please try again.');
+      const input1 = document.getElementById('username');
+      const input2 = document.getElementById('password');
+      input1.style.borderColor = 'red';
+      input2.style.borderColor = 'red';
     });
   });
 
