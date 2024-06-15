@@ -18,7 +18,7 @@ handlers:
     default:
         class: logging.StreamHandler
         formatter: default
-        stream: ext://sys.stderr
+        stream: ext://sys.stdout
 
     custom_handler:
         class: logging.FileHandler

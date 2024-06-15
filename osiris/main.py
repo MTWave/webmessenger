@@ -1,21 +1,35 @@
-from fastapi import FastAPI, APIRouter, Depends, Request
-from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
+import logging
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi_csrf_protect import CsrfProtect
 from fastapi_csrf_protect.exceptions import CsrfProtectError
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import ValidationError
 
 from osiris import settings
+from osiris.core.logger_setup import setup_logging
 from osiris.services.auth_service.api import router as auth_router
+from osiris.services.auth_service.auth_service import AuthService
 
 TEMPLATES = Jinja2Templates(directory=settings.templates_dir)
 
 
-app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    setup_logging()
+    yield
+    # Clean up the ML models and release the resources
+
+
+app = FastAPI(title="Recipe API", openapi_url="/openapi.json", lifespan=lifespan, loglevel="debug")
 app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
 
 api_router = APIRouter()
 api_router.include_router(auth_router)
+
+logger = logging.getLogger("custom")
 
 @api_router.get("/", status_code=200)
 def root() -> dict:
@@ -25,25 +39,51 @@ def root() -> dict:
     return {"msg": "Hello, World!"}
 
 @api_router.get("/sign_in", status_code=200)
-def sign_in(request: Request) -> dict:
+def sign_in(request: Request, service: AuthService = Depends()) -> dict:
     """
     Root GET
     """
+    access_token = request.cookies.get(settings.auth_service_cookie_name)
+    try:
+        # ToDo Bearer access_token= - dirty hack!
+        if access_token is not None and access_token.startswith("Bearer"):
+            access_token = access_token.removeprefix("Bearer").strip()
+            logger.info(access_token)
+            service.validate_token(access_token)
+            return RedirectResponse(f"/chat")
+
+    except ValidationError:
+        pass
+
     return TEMPLATES.TemplateResponse(
         "MainOsiris.html",
         {"request": request},
     )
 
+
 @api_router.get("/sign_up", status_code=200)
-def sign_in(request: Request) -> dict:
+def sign_in(request: Request, service: AuthService = Depends()) -> dict:
     """
     Root GET
     """
-    # ToDo - redirect
+    access_token = request.cookies.get(settings.auth_service_cookie_name)
+    try:
+        # ToDo Bearer access_token= - dirty hack!
+        if access_token is not None and access_token.startswith("Bearer"):
+            access_token = access_token.removeprefix("Bearer").strip()
+            logger.info(access_token)
+            service.validate_token(access_token)
+            return RedirectResponse(f"/chat")
+
+    except ValidationError:
+        pass
+
     return TEMPLATES.TemplateResponse(
         "RegistrationOsiris.html",
         {"request": request},
     )
+
+
 
 #@api_router.get("/csrftoken/")
 #async def get_csrf_token(csrf_protect:CsrfProtect = Depends()):

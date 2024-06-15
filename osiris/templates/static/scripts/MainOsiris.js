@@ -22,9 +22,8 @@
       return response.json();
     })
     .then(data => {
-      console.log(data);
-      localStorage.setItem('jwtToken', data["access_token"])
-      //window.location.href = '/dashboard'; // Редирект на другую страницу после успешной авторизации
+      //console.log(data);
+      window.location.href = '/chat'; // Редирект на другую страницу после успешной авторизации
     })
     .catch(error => {
       console.error('Error:', error);
