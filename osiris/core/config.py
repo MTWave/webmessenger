@@ -25,5 +25,5 @@ class Settings(BaseSettings):
     # auth service
     auth_service_jwt_secret: str = "dftgyhujklnbvcfgrt7yiuy65e4wrdtcfgvjhbio8y7tf"
     auth_service_jwt_algo: str = "HS256"
-    auth_service_expire_time: int = 30 # minutes
+    auth_service_expire_time: int = 30 * 60# minutes
     auth_service_cookie_name: str = "access_token"

@@ -22,7 +22,7 @@
       return response.json();
     })
     .then(data => {
-      //console.log(data);
+      console.log(data);
       window.location.href = '/chat'; // Редирект на другую страницу после успешной авторизации
     })
     .catch(error => {

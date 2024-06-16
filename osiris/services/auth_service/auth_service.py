@@ -120,7 +120,6 @@ class AuthService:
         user = user.scalar()
 
         if not user or not self.verify_password(password, user.password):
-            
             raise self.authentification_exception()
 
         return self.create_token(user)
