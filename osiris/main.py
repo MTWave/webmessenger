@@ -1,21 +1,41 @@
-from fastapi import FastAPI, APIRouter, Depends, Request
-from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
+import logging
+from optparse import Option
+from typing import Optional
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi_csrf_protect import CsrfProtect
 from fastapi_csrf_protect.exceptions import CsrfProtectError
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import ValidationError
 
 from osiris import settings
+from osiris.core.logger_setup import setup_logging
 from osiris.services.auth_service.api import router as auth_router
+from osiris.services.chats_service.api import router as chats_router
+from osiris.services.auth_service.auth_service import AuthService
+from osiris.services.auth_service.dependency import get_current_user
+from osiris.services.auth_service.models import UserJwtSchema
 
 TEMPLATES = Jinja2Templates(directory=settings.templates_dir)
 
 
-app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    setup_logging()
+    yield
+    # Clean up the ML models and release the resources
+
+
+app = FastAPI(title="Recipe API", openapi_url="/openapi.json", lifespan=lifespan, loglevel="debug")
 app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
 
 api_router = APIRouter()
 api_router.include_router(auth_router)
+api_router.include_router(chats_router)
+
+logger = logging.getLogger("custom")
 
 @api_router.get("/", status_code=200)
 def root() -> dict:
@@ -25,25 +45,58 @@ def root() -> dict:
     return {"msg": "Hello, World!"}
 
 @api_router.get("/sign_in", status_code=200)
-def sign_in(request: Request) -> dict:
+def sign_in(
+    request: Request,
+    service: AuthService = Depends(),
+    current_user: Optional[UserJwtSchema] = Depends(get_current_user)
+) -> dict:
     """
     Root GET
     """
+    logger.info(current_user)
+    if current_user is not None:
+        return RedirectResponse(f"/chat")
+
     return TEMPLATES.TemplateResponse(
         "MainOsiris.html",
         {"request": request},
     )
 
+
 @api_router.get("/sign_up", status_code=200)
-def sign_in(request: Request) -> dict:
+def sign_in(
+    request: Request,
+    current_user: Optional[UserJwtSchema] = Depends(get_current_user)
+) -> dict:
     """
     Root GET
     """
-    # ToDo - redirect
+    logger.info(current_user)
+    if current_user is not None:
+        return RedirectResponse(f"/chat")
+
     return TEMPLATES.TemplateResponse(
         "RegistrationOsiris.html",
         {"request": request},
     )
+
+@api_router.get("/chat", status_code=200)
+def chat(
+    request: Request,
+    current_user: Optional[UserJwtSchema] = Depends(get_current_user)
+) -> dict:
+    """
+    Root GET
+    """
+    logger.info(current_user)
+    if current_user is None:
+        return RedirectResponse(f"/sign_in")
+
+    return TEMPLATES.TemplateResponse(
+        "Messenger.html",
+        {"request": request},
+    )
+
 
 #@api_router.get("/csrftoken/")
 #async def get_csrf_token(csrf_protect:CsrfProtect = Depends()):

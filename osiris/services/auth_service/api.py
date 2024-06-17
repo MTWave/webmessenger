@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 
+
+from osiris import settings
 from osiris.schemas.exception import ExceptionMessageSchema
 from osiris.services.auth_service.auth_service import AuthService
 from osiris.services.auth_service.exceptions import UserExistsException
@@ -11,6 +13,16 @@ router = APIRouter(
     prefix="/auth",
     tags=["auth"]
 )
+
+
+# ToDo: method to service?
+def set_auth_token(response: Response, access_token: TokenSchema):
+    response.set_cookie(
+        key=settings.auth_service_cookie_name, 
+        value=f"Bearer {access_token.access_token}",
+        httponly=True
+    )  
+    return access_token
 
 
 @router.post(
@@ -29,8 +41,9 @@ router = APIRouter(
     }
 )
 async def sign_up(
-        user_data: UserCreateSchema,
-        service: AuthService = Depends()
+    response: Response, 
+    user_data: UserCreateSchema,
+    service: AuthService = Depends()
 ):
     """
     Create a new account
@@ -38,14 +51,14 @@ async def sign_up(
     **user_data**: username, email and password for registration
     """
     try:
-        token = await service.register_new_user(user_data)
+        access_token = await service.register_new_user(user_data)
     except UserExistsException:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="User with this email already exists"
         )
-    return token
 
+    return set_auth_token(response, access_token)
 
 @router.post(
     "/sign_in",
@@ -65,6 +78,7 @@ async def sign_up(
 async def sign_in(
         # ToDo: OAuth2PasswordRequestForm
         #form_data: OAuth2PasswordRequestForm = Depends(),
+        response: Response,
         user_data: UserCreateSchema,
         service: AuthService = Depends()
 ):
@@ -73,7 +87,9 @@ async def sign_in(
 
     **form_data**: password and email for authorization
     """
-    return await service.authenticate_user(
+    access_token = await service.authenticate_user(
         user_data.login,
         user_data.password
     )
+
+    return set_auth_token(response, access_token)

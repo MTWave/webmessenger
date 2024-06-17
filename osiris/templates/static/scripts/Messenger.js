@@ -1,143 +1,143 @@
-"use strict";
 
-//elements
-var conversation = $('.conversation');
-var lastSentMessages = $('.messages--sent:last-child');
-var textbar = $('.text-bar__field input');
-var textForm = $('#form-message');
-var thumber = $('.text-bar__thumb');
+// Chats
+function create_chat_bar(chat_data) {
+	var chat_bar = document.createElement('div');
+	chat_bar.setAttribute("class", "profile");
+	chat_bar.setAttribute("onclick", `select_chat(${chat_data.chat_id})`);
 
-var scrollTop = $(window).scrollTop();
+	chat_bar.innerHTML = `
+		<img src="PImg.jpg" alt="" width="100" height="100">
+		<div class="name">
+			${chat_data.user_name}
+		</div>
+		<div class="job">
+			User
+		</div>
+		`;
 
-
-
-var Message = {
-	currentText: "test",
-	init: function(){
-		var base = this;
-		base.send();
-	},
-	send: function(){
-		var base = this;
-		textForm.submit(function( event ) {
-		  	event.preventDefault();
-			base.createGroup();
-			base.saveText();
-			if(base.currentText != ''){
-				base.createMessage();
-				base.scrollDown();
-			}
-		});
-	},
-	saveText: function(){
-		var base = this;
-		base.currentText = textbar.val();
-		textbar.val('');
-	},
-	createMessage: function(){
-		var base = this;
-		lastSentMessages.append($('<div/>')
-								.addClass('message')
-								.text(base.currentText));
-	},
-	createGroup: function(){
-		if($('.messages:last-child').hasClass('messages--received')){
-			conversation.append($('<div/>')
-							.addClass('messages messages--sent'));
-			lastSentMessages = $('.messages--sent:last-child');
-		}
-	},
-	scrollDown: function(){
-		var base = this;
-		//conversation.scrollTop(conversation[0].scrollHeight);
-		conversation.stop().animate({
-			scrollTop: conversation[0].scrollHeight
-		}, 500);
-	}
-};
-
-var Thumb = {
-	init: function(){
-		var base = this;
-		base.send();
-	},
-	send: function(){
-		var base = this;
-		thumber.on("mousedown", function(){
-			Message.createGroup();
-			base.create();
-			base.expand();
-		});
-	},
-	expand: function(){
-		var base = this;
-		var thisThumb = lastSentMessages.find('.message:last-child');
-		var size = 20;
-		
-		var expandInterval = setInterval(function(){ expandTimer() }, 30);
-		
-		function stopExpand(){
-			base.stopWiggle();
-			clearInterval(expandInterval);
-		}
-		
-		var firstExpand = false;
-		function expandTimer() {
-			
-			if(size >= 130){
-				stopExpand();
-				base.remove();
-			}
-			else{
-				if(size>50){
-					size += 2;
-					thisThumb.removeClass('anim-wiggle');
-					thisThumb.addClass('anim-wiggle-2');
-				}
-				else{
-					size += 1;
-					thisThumb.addClass()
-				}
-				thisThumb.width(size);
-				thisThumb.height(size);
-				if(firstExpand){
-					conversation.scrollTop(conversation[0].scrollHeight);
-				}
-				else{
-					Message.scrollDown();
-					firstExpand = true;
-				}
-			}
-		}
-		
-		thumber.on("mouseup", function(){
-			stopExpand();
-		});
-	},
-	create: function(){
-		lastSentMessages.append(
-			$('<div/>').addClass('message message--thumb thumb anim-wiggle')
-		);
-	},
-	remove: function(){
-		lastSentMessages.find('.message:last-child').animate({
-			width: 0,
-			height: 0
-		}, 300);
-		setTimeout(function(){
-			lastSentMessages.find('.message:last-child').remove();
-		}, 300);
-	},
-	stopWiggle: function(){
-		lastSentMessages.find('.message').removeClass('anim-wiggle');
-		lastSentMessages.find('.message').removeClass('anim-wiggle-2');
-	}
-	
+	document.getElementById('chat_list').appendChild(chat_bar);
 }
 
+function add_chat_bar(chats){
+	chats.forEach(item => create_chat_bar(item));
+}
 
-var newMessage = Object.create(Message);
-newMessage.init();
+function findMinId(jsonList) {
+    // Инициализируем переменную с самым большим значением id
+    let minId = jsonList[0].chat_id;
 
-var newThumb = Object.create(Thumb);
-newThumb.init();
+    // Итерируемся по каждому объекту в массиве
+    jsonList.forEach(function(obj) {
+        if (obj.chat_id < minId) {
+            minId = obj.chat_id;
+        }
+    });
+
+    return minId;
+}
+
+function init_chat_bar() {
+	fetch(
+		'chats/list', {
+	method: 'GET'
+	})
+	.then(response => {
+		if (!response.ok) {
+		throw new Error('Network response was not ok');
+		}
+		return response.json()
+	})
+	.then(
+		response_json => {
+			console.log(response_json);
+			add_chat_bar(response_json);
+			select_chat(findMinId(response_json))
+	})
+}
+
+// Messenger
+
+function add_message(message) {
+	// ToDo - params of url?
+	if (message.chat_id != localStorage.getItem("current_chat"))
+		return
+
+	var message_bar = document.createElement('div');
+	// ToDo: check is itself user
+	
+
+	// ToDo check is it current user == message.author_id
+	var currentUser = false;
+
+	if (currentUser) {
+		message_bar.setAttribute("class", "wrapper");
+		message_bar.innerHTML = `
+                    <div class="item1L">
+                        <div class="message">
+                            <p class="message-text">${message.text}</p>
+                          </div>
+                    </div>
+		`
+	} else {
+
+		message_bar.setAttribute("class", "wrapper1");
+		message_bar.innerHTML = `
+		            <div class="item1L">
+                        <div class="message">
+                            <p class="message-text">${message.text}</p>
+                          </div>
+                    </div>
+		`
+	}
+
+	document.getElementById('messages_wrapper').appendChild(message_bar);
+}
+
+function add_messages(messages) {
+	messages.forEach(item => add_message(item));
+}
+
+function select_chat(chat_id) {
+	localStorage.setItem("current_chat", chat_id);
+
+	messenger = document.getElementById("messages_wrapper");
+	messenger.innerHTML='';
+
+	fetch(
+		`chats/${chat_id}/messages`, {
+		method: 'GET'
+	})
+	.then(response => {
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+		return response.json()
+	}).then(
+		response_json => {
+		console.log(response_json);
+		add_messages(response_json);
+	})
+}
+
+function send_message() {
+    //event.preventDefault(); // Отменяем стандартное поведение формы
+    var formData = {
+		chat_id: localStorage.getItem("current_chat"),
+        message_text: document.getElementById('message_text').value
+    };
+    
+    fetch(
+        'chats/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+}

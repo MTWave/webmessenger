@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import logging
 from sqlite3 import IntegrityError
 import sqlite3
 from typing import Annotated, Union
@@ -26,6 +27,7 @@ from osiris.services.auth_service.models import TokenSchema, UserCreateSchema, U
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+logger = logging.getLogger("custom")
 
 class AuthService:
     def __init__(self, session: AsyncSession = Depends(get_session)):
@@ -82,6 +84,7 @@ class AuthService:
                 algorithms=[settings.auth_service_jwt_algo]
             )
         except jwt.exceptions.PyJWTError:
+            logger.warn("AuthService.authentification_exception() ")
             raise AuthService.authentification_exception() from None
 
         user_data = payload.get("user")
@@ -89,6 +92,7 @@ class AuthService:
         try:
             user = UserJwtSchema.model_validate(user_data)
         except ValidationError:
+            logger.warn("AuthService.ValidationError() ")
             raise AuthService.authentification_exception() from None
 
         return user
@@ -116,7 +120,6 @@ class AuthService:
         user = user.scalar()
 
         if not user or not self.verify_password(password, user.password):
-            
             raise self.authentification_exception()
 
         return self.create_token(user)
