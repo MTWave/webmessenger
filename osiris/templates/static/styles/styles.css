@@ -1,0 +1,237 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .messenger-container {
+    display: flex;
+    height: 100%;
+  }
+  
+  .chat-list {
+    width: 30%;
+    background-color: #f0f0f0;
+    border-right: 1px solid #ccc;
+  }
+  
+  .chat-window {
+    flex: 1;
+    display: flex; 
+    flex-direction: column; /* Определяем направление flex-контейнера как вертикальное */
+    background-color: #e0e0e0;
+    max-height: 100%;
+    display:grid;
+    grid-template-rows:9fr 1fr;
+  }
+
+  
+  .dialog-container {
+    width: 96%; /* Занимает всю ширину родительского элемента */
+    margin-left: 2%;
+    padding-right: 2%;
+    overflow: auto; /* Добавляет полосы прокрутки при необходимости */
+  }
+
+/* 
+чаты
+*/
+
+  .chat-tile {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .chat-avatar {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .chat-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .chat-info {
+    flex: 1;
+  }
+  
+  .chat-name {
+    font-weight: bold;
+    color: #6a0dad; /* Тут светло-фиолетовый цвет */
+  }
+  
+  .last-message {
+    color: #6a0dad; /* Тут светло-филетовый цвет */
+  }
+  
+
+  /*
+  Cообщенько
+  */
+
+  .my-message {
+    background-color: #007bff; /* Синий цвет облачка для текущего пользователя */
+    color: #fff; /* Белый цвет текста */
+    padding: 10px;
+    border-radius: 10px;
+    text-align: right; /* Текст прижимается к правому краю блока */
+    margin: 10px 0;
+  }
+  
+  .my-message-text {
+    margin-bottom: 5px;
+  }
+
+  .message {
+    background-color: #e6e6e6; /* Светло-серый цвет облачка */
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+  
+  }
+  
+  .message-text {
+    margin-bottom: 5px;
+    text-align: right; /* Текст прижимается к правому краю блока */
+  }
+  
+  .message-sender {
+    font-size: 12px;
+    color: #03127f; /* Цвет никнейма пользователя */
+    text-align: left; /* Никнейм прижимается к правому краю блока */
+  }
+  
+
+  /*
+  форма отправки
+  */
+
+  .chat-form {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.chat-form textarea {
+    width: 100%;
+    height: 80px; /* Adjust height as needed */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical; /* Allow vertical resizing of textarea */
+}
+.chat-form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.chat-form button:hover {
+    background-color: #45a049;
+}
+
+
+
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #007bff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .floating-button button {
+    font-size: 36px;
+    color: white;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+  }
+
+
+  .message-bubble {
+    background-color: #f0f0f0; /* цвет облачка */
+    border-radius: 15px; /* закругление углов облачка */
+    padding: 10px; /* отступ внутри облачка */
+    display: inline-block; /* блочный элемент внутри строки */
+    max-width: 75%; /* максимальная ширина сообщения */
+    margin: 5px 0; /* отступы вокруг сообщения */
+}
+
+.my-message-wrapper {
+
+    text-align: right; /* Выравнивает контент по правому краю */
+
+}
+
+.my-message-bubble {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 15px; /* закругление углов облачка */
+    padding: 10px; /* отступ внутри облачка */
+    display: inline-block; /* блочный элемент внутри строки */
+    max-width: 75%; /* максимальная ширина сообщения */
+    margin: 5px 0; /* отступы вокруг сообщения */
+    text-align: right; padding: 10px;"
+}
+
+
+.form-container {
+    width: 90%;
+    
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+    text-align: center;
+    
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.message-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.submit-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* End */

@@ -23,6 +23,7 @@
     })
     .then(data => {
       console.log(data);
+      localStorage.setItem("current_user", formData.login)
       window.location.href = '/chat'; // Редирект на другую страницу после успешной авторизации
     })
     .catch(error => {
