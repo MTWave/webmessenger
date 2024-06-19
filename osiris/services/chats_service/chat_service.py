@@ -44,11 +44,36 @@ class ChatService:
         r = result.scalars().all()
         logger.info(r)
         return r
-
-
-    async def get_messages_by_chat_id(self, chat_id,user_id) -> List[MessageModel]:
+    
+    async def has_user_chat(self, user_id, chat_id) -> bool:
         query = (
-            select(MessageModel)
+            select(UsersChatsModel)
+                .where(UsersChatsModel.user_id == user_id)
+                .where(UsersChatsModel.chat_id == chat_id)
+        )
+        result = await self.session.execute(query)
+        r = result.scalars().all()
+
+        return len(r) > 0
+
+    async def get_users_by_chat_id(self, chat_id) -> List[int]:
+        query = (
+            select(UsersChatsModel.user_id)
+                .where(UsersChatsModel.chat_id == chat_id)
+        )
+        result = await self.session.execute(query)
+        return result.scalars().all()
+
+    async def get_messages_by_chat_id(self, chat_id,user_id):# -> List[MessageModel]:
+        query = (
+            select(
+                MessageModel.id,
+                MessageModel.content,
+                MessageModel.creation_date,
+                MessageModel.chat_id,
+                MessageModel.user_id,
+                UserModel.login
+            )
                 .join(UsersChatsModel, MessageModel.chat_id == UsersChatsModel.chat_id)
                 .join(UserModel, MessageModel.user_id == UserModel.id)
                 .filter(UsersChatsModel.user_id == user_id)
@@ -56,7 +81,7 @@ class ChatService:
         )
 
         result = await self.session.execute(query)
-        r = result.scalars().all()
+        r = result.all()
         logger.info([a for a in r])
         return r
 
@@ -66,16 +91,48 @@ class ChatService:
         chat_id,
         user_id,
         message_text
-    ) -> None:
+    ) -> MessageModel:
         message = MessageModel(
             content=message_text,
             creation_date=datetime.now(),
             chat_id=chat_id,
             user_id=user_id
         )
-
-        self.session.add(message)
-        await self.session.commit()
+        try:
+            self.session.add(message)
+            await self.session.commit()
+        except Exception as e:
+            logger.warn(e)
+            raise e
         # ToDo
 
+        return message
 
+    async def create_chat(
+        self,
+        name: str,
+        users: List[int]
+    ) -> ChatModel:
+        chat = ChatModel(
+            name=name
+        )
+        self.session.add(chat)
+
+        chat.members = [
+            select(UserModel).where(UserModel.id.in_(users))
+        ]
+        self.session.add(chat)
+        await self.session.commit()
+
+        return chat
+
+    async def get_user_by_id(self, user_id) -> UserModel:
+        result = await self.session.execute(
+            select(UserModel).where(UserModel.id == user_id)
+        )
+        
+        r = result.fetchone()
+        logger.info(["asd" for a in r])
+        logger.info([a for a in r])
+        return r[0]
+         

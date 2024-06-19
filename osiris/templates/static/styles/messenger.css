@@ -332,11 +332,14 @@ body {
     background-color: #fff;
     border-radius: 18px;
     box-shadow: 1px 1px 8px 0 rgb(133, 106, 133);
-    height: auto;
+    height: 80%%;
     margin-bottom: 20px;
     padding: 20px 0 20px 50px;
 }
 
+#messages_wrapper {
+    overflow: scroll;
+}
 .main .card table {
     border: none;
     font-size: 16px;

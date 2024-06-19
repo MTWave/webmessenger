@@ -2,17 +2,17 @@
 // Chats
 function create_chat_bar(chat_data) {
 	var chat_bar = document.createElement('div');
-	chat_bar.setAttribute("class", "profile");
+	chat_bar.setAttribute("class", "chat-tile");
 	chat_bar.setAttribute("onclick", `select_chat(${chat_data.chat_id})`);
 
 	chat_bar.innerHTML = `
-		<img src="PImg.jpg" alt="" width="100" height="100">
-		<div class="name">
-			${chat_data.user_name}
-		</div>
-		<div class="job">
-			User
-		</div>
+        <div class="chat-avatar">
+          <img src="avatar.jpg" alt="Chat Avatar">
+        </div>
+        <div class="chat-info">
+          <div class="chat-name">Н${chat_data.name}</div>
+          <div class="last-message">${chat_data.chat_id}</div>
+        </div>
 		`;
 
 	document.getElementById('chat_list').appendChild(chat_bar);
@@ -58,6 +58,11 @@ function init_chat_bar() {
 // Messenger
 
 function add_message(message) {
+	/*
+	add_message
+	author
+	text
+	*/
 	// ToDo - params of url?
 	if (message.chat_id != localStorage.getItem("current_chat"))
 		return
@@ -67,30 +72,28 @@ function add_message(message) {
 	
 
 	// ToDo check is it current user == message.author_id
-	var currentUser = false;
+	var current_user = localStorage.getItem("current_user");
 
-	if (currentUser) {
-		message_bar.setAttribute("class", "wrapper");
+	// ToDo autor_id
+	if (message.author == current_user) {
+		message_bar.setAttribute("class", "my-message-wrapper");
 		message_bar.innerHTML = `
-                    <div class="item1L">
-                        <div class="message">
-                            <p class="message-text">${message.text}</p>
-                          </div>
-                    </div>
+            <div class="my-message-bubble">
+                <div class="message-text">${message.text}</div>
+            </div>
 		`
 	} else {
 
-		message_bar.setAttribute("class", "wrapper1");
+		message_bar.setAttribute("class", "message-wrapper");
 		message_bar.innerHTML = `
-		            <div class="item1L">
-                        <div class="message">
-                            <p class="message-text">${message.text}</p>
-                          </div>
-                    </div>
+            <div class="message-bubble">
+                <div class="message-sender">${message.author}</div>
+                <div class="message-text">${message.text}</div>
+            </div>
 		`
 	}
 
-	document.getElementById('messages_wrapper').appendChild(message_bar);
+	document.getElementById('dialog_container').appendChild(message_bar);
 }
 
 function add_messages(messages) {
@@ -100,7 +103,7 @@ function add_messages(messages) {
 function select_chat(chat_id) {
 	localStorage.setItem("current_chat", chat_id);
 
-	messenger = document.getElementById("messages_wrapper");
+	messenger = document.getElementById("dialog_container");
 	messenger.innerHTML='';
 
 	fetch(
@@ -119,13 +122,14 @@ function select_chat(chat_id) {
 	})
 }
 
-function send_message() {
-    //event.preventDefault(); // Отменяем стандартное поведение формы
+function send_message(event) {
+    event.preventDefault(); // Отменяем стандартное поведение формы
     var formData = {
+		msg_type: "create_msg",
 		chat_id: localStorage.getItem("current_chat"),
-        message_text: document.getElementById('message_text').value
+        msg_text: document.getElementById('message_text').value
     };
-    
+    /*
     fetch(
         'chats/send', {
       method: 'POST',
@@ -140,4 +144,14 @@ function send_message() {
       }
       return response.json();
     })
+    */
+	wsManager.sendMessage(formData)
 }
+
+function handle_ws_message(msg) {
+	if (msg.msg_type == "msg_created") {
+		add_message(msg)
+	}
+}
+
+document.getElementById("msg_sender").addEventListener('submit', send_message);

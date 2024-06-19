@@ -1,86 +1,39 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Osiris</title>
-
-    <!-- Custom Css -->
-    <link href="/static/styles/messenger.css" rel="stylesheet">
-    <script src="/static/scripts/Messenger.js" defer=""></script>
-
-    <!-- FontAwesome 5 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messenger</title>
+  <link rel="stylesheet" href="static/styles/styles.css">
+  <script src="/static/scripts/websocket.js" defer=""></script>
+  <script src="/static/scripts/Messenger.js" defer=""></script>
 </head>
 <body onload="init_chat_bar()">
-    <!-- Navbar top -->
-    <div class="navbar-top">
-        <div class="title">
-            <h1>OSIRIS</h1>
-        </div>
-
-        <!-- Navbar -->
-        <ul>
-            <li>
-                <a href="#sign-out">
-                    <i class="fa fa-sign-out-alt fa-2x"></i>
-                </a>
-            </li>
-        </ul>
-        <!-- End -->
-    </div>
-    <!-- End -->
-
-    <!-- Sidenav -->
-    <div class="sidenav">
-        <div id="chat_list">
-            <!-- chat_list -->
-        </div>
-
-        <div class="sidenav-url">
-            <div class="url">
-                <a href="#settings">Add?</a>
-          </div>
+  <div class="messenger-container">
+    <div id="chat_list" class="chat-list">
+      <!-- Список чатов -->
       
-      
-      <div class="area" >
-                  <ul class="circles">
-                          <li></li>
-                          <li></li>
-                          <li></li>
-                          <li></li>
-                          <li></li>
-                          <li></li>
-                          <li></li>
-                          <li></li>
-                          <li></li>
-                          <li></li>
-                  </ul>
-          </div >
-        </div>
-        
     </div>
-    <!-- End -->
+    <div class="chat-window">
+       
 
-    <!-- Main -->
-    <div class="main">
-        <h2>MESSENGER</h2>
-        <div class="card">
-            <div id="messages_wrapper" class="card-body">
-
-            </div>
-            <div id="messages_wrapper" >
-                <div class="form-container">
-                    <form onsubmit="send_message()">
-                        <input id="message_text" type="text" name="message" placeholder="Введите сообщение" class="message-input">
-                        <button type="submit" class="submit-button">➡️</button>
-                    </form>
-                </div>
-            </div>
+        <div id="dialog_container" class="dialog-container">
+            <!-- Окно чата -->
 
         </div>
 
-        
+
+        <div class="form-container">
+            <form id="msg_sender">
+                <input id="message_text" type="text" name="message" placeholder="Введите сообщение" class="message-input">
+                <button type="submit" class="submit-button">➡️</button>
+            </form>
+        </div>
     </div>
-    <!-- End -->
+
+  <div class="floating-button">
+    <button onclick="handleButtonClick()">+</button>
+  </div>
+
 </body>
 </html>
