@@ -7,7 +7,7 @@ function create_chat_bar(chat_data) {
 
 	chat_bar.innerHTML = `
         <div class="chat-avatar">
-          <img src="avatar.jpg" alt="Chat Avatar">
+          <img src="static/imgs/PImg.jpg" alt="Chat Avatar">
         </div>
         <div class="chat-info">
           <div class="chat-name">Н${chat_data.name}</div>
